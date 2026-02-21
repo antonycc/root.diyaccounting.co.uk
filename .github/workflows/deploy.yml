@@ -6,51 +6,50 @@ on:
     inputs:
       ci-gateway-cloudfront-domain:
         type: string
-        description: 'Override CI gateway CloudFront domain. Default: auto-lookup from ci-gateway-GatewayStack.'
+        description: "Override CI gateway CloudFront domain. Default: auto-lookup from ci-gateway-GatewayStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
       prod-gateway-cloudfront-domain:
         type: string
-        description: 'Override prod gateway CloudFront domain. Default: auto-lookup from prod-gateway-GatewayStack.'
+        description: "Override prod gateway CloudFront domain. Default: auto-lookup from prod-gateway-GatewayStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
       ci-spreadsheets-cloudfront-domain:
         type: string
-        description: 'Override CI spreadsheets CloudFront domain. Default: auto-lookup from ci-spreadsheets-SpreadsheetsStack.'
+        description: "Override CI spreadsheets CloudFront domain. Default: auto-lookup from ci-spreadsheets-SpreadsheetsStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
       prod-spreadsheets-cloudfront-domain:
         type: string
-        description: 'Override prod spreadsheets CloudFront domain. Default: auto-lookup from prod-spreadsheets-SpreadsheetsStack.'
+        description: "Override prod spreadsheets CloudFront domain. Default: auto-lookup from prod-spreadsheets-SpreadsheetsStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
       apex-cloudfront-domain:
         type: string
-        description: 'Override apex (diyaccounting.co.uk) CloudFront domain. Default: auto-lookup from prod-gateway-GatewayStack.'
+        description: "Override apex (diyaccounting.co.uk) CloudFront domain. Default: auto-lookup from prod-gateway-GatewayStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
       www-cloudfront-domain:
         type: string
-        description: 'Override www.diyaccounting.co.uk CloudFront domain. Default: auto-lookup from prod-gateway-GatewayStack.'
+        description: "Override www.diyaccounting.co.uk CloudFront domain. Default: auto-lookup from prod-gateway-GatewayStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
       spreadsheets-cloudfront-domain:
         type: string
-        description: 'Override spreadsheets.diyaccounting.co.uk CloudFront domain. Default: auto-lookup from prod-spreadsheets-SpreadsheetsStack.'
+        description: "Override spreadsheets.diyaccounting.co.uk CloudFront domain. Default: auto-lookup from prod-spreadsheets-SpreadsheetsStack."
         required: false
-        default: '(auto)'
+        default: "(auto)"
 
 permissions:
   id-token: write
   contents: read
 
 env:
-  JAVA_VERSION: '25'
-  NODE_VERSION: '24'
-  AWS_REGION: 'us-east-1'
+  JAVA_VERSION: "25"
+  NODE_VERSION: "24"
+  AWS_REGION: "us-east-1"
 
 jobs:
-
   params:
     runs-on: ubuntu-24.04
     permissions: {}
@@ -143,21 +142,20 @@ jobs:
       environment-name: ${{ steps.deployment-config.outputs.environment-name }}
       deployment-name: ${{ steps.deployment-config.outputs.deployment-name }}
       base-domain: ${{ steps.deployment-config.outputs.base-domain }}
-      base-url:      ${{ steps.deployment-config.outputs.base-url }}
+      base-url: ${{ steps.deployment-config.outputs.base-url }}
       apex-domain: ${{ steps.deployment-config.outputs.apex-domain }}
       apex-url: ${{ steps.deployment-config.outputs.apex-url }}
       holding-domain: ${{ steps.deployment-config.outputs.holding-domain }}
       holding-url: ${{ steps.deployment-config.outputs.holding-url }}
 
   deploy-root-dns:
-    name: 'deploy root DNS records'
+    name: "deploy root DNS records"
     needs:
       - params
       - names
     runs-on: ubuntu-24.04
     environment: prod
     steps:
-
       # === Build tools (no AWS credentials needed) ===
 
       - name: Checkout
@@ -167,16 +165,16 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Node dependencies
         run: npm ci
 
       - uses: actions/setup-java@v5
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
-          cache: 'maven'
+          cache: "maven"
 
       - name: Build CDK JARs
         run: ./mvnw --errors clean verify -DskipTests -Dmaven.compiler.source=${{ env.JAVA_VERSION }} -Dmaven.compiler.target=${{ env.JAVA_VERSION }}

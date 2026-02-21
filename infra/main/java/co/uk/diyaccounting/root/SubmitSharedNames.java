@@ -3,12 +3,12 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit;
+package co.uk.diyaccounting.root;
 
-import static co.uk.diyaccounting.submit.utils.ResourceNameUtils.buildDashedDomainName;
-import static co.uk.diyaccounting.submit.utils.ResourceNameUtils.convertDotSeparatedToDashSeparated;
+import static co.uk.diyaccounting.root.utils.ResourceNameUtils.buildDashedDomainName;
+import static co.uk.diyaccounting.root.utils.ResourceNameUtils.convertDotSeparatedToDashSeparated;
 
-import co.uk.diyaccounting.submit.utils.ResourceNameUtils;
+import co.uk.diyaccounting.root.utils.ResourceNameUtils;
 import java.util.ArrayList;
 import java.util.List;
 import software.amazon.awscdk.services.apigatewayv2.HttpMethod;
@@ -1002,8 +1002,7 @@ public class SubmitSharedNames {
                 "%s-%s".formatted(this.appResourceNamePrefix, passMyPassesGetLambdaHandlerDashed);
         this.passMyPassesGetIngestLambdaHandler =
                 "%s/account/%s".formatted(appLambdaHandlerPrefix, passMyPassesGetLambdaHandlerName);
-        this.passMyPassesGetIngestLambdaArn =
-                "%s-%s".formatted(appLambdaArnPrefix, passMyPassesGetLambdaHandlerDashed);
+        this.passMyPassesGetIngestLambdaArn = "%s-%s".formatted(appLambdaArnPrefix, passMyPassesGetLambdaHandlerDashed);
         this.passMyPassesGetIngestProvisionedConcurrencyLambdaAliasArn =
                 "%s:%s".formatted(this.passMyPassesGetIngestLambdaArn, this.provisionedConcurrencyAliasName);
         publishedApiLambdas.add(new PublishedLambda(

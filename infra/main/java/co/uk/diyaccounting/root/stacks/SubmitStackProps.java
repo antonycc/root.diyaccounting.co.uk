@@ -3,9 +3,9 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit.stacks;
+package co.uk.diyaccounting.root.stacks;
 
-import co.uk.diyaccounting.submit.SubmitSharedNames;
+import co.uk.diyaccounting.root.SubmitSharedNames;
 
 public interface SubmitStackProps {
     String envName();

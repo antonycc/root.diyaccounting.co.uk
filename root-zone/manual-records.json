@@ -46,8 +46,6 @@
     "type": "CNAME",
     "owner": "email (webmail redirect)",
     "ttl": 1800,
-    "values": [
-      "ghs.google.com."
-    ]
+    "values": ["ghs.google.com."]
   }
 ]

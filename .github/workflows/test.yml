@@ -1,0 +1,129 @@
+name: test
+run-name: "test from ${{ github.ref_name }}"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "infra/**"
+      - "web/**"
+      - "**/cdk.json"
+      - "package.json"
+      - "package-lock.json"
+      - "pom.xml"
+      - ".github/actions/get-names"
+      - ".github/workflows/*.yml"
+      - ".prettierignore"
+      - ".prettierrc"
+  schedule:
+    - cron: "23 4 * * *"
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: "25"
+  NODE_VERSION: "24"
+
+jobs:
+  lint-workflows:
+    name: "validate workflow syntax"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install actionlint
+        run: |
+          # Download and install actionlint
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          echo "$PWD" >> $GITHUB_PATH
+
+      - name: Validate workflows
+        run: |
+          # Run actionlint with relaxed checking
+          ./actionlint \
+            -ignore 'SC2001' \
+            -ignore 'SC2002' \
+            -ignore 'SC2015' \
+            -ignore 'SC2016' \
+            -ignore 'SC2076' \
+            -ignore 'SC2086' \
+            -ignore 'SC2129' \
+            -ignore 'SC2155' \
+            -ignore 'SC2207' \
+            -ignore 'bool value cannot be assigned' \
+            .github/workflows/*.yml
+
+  formatting:
+    name: "check formatting"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Node dependencies
+        run: npm ci
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: "maven"
+
+      - name: Check formatting (Prettier + Spotless)
+        run: npm run formatting
+
+  mvn-verify:
+    name: "maven verify"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: "maven"
+
+      - name: Build and verify
+        run: ./mvnw clean verify
+
+  cdk-synth:
+    name: "cdk synth"
+    needs:
+      - mvn-verify
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Node dependencies
+        run: npm ci
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: "maven"
+
+      - name: Build CDK JARs
+        run: ./mvnw --errors clean verify -DskipTests
+
+      - name: Synthesize CloudFormation templates
+        run: npm run cdk:synth

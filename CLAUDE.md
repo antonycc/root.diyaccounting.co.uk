@@ -3,16 +3,19 @@
 ## Context Survival (CRITICAL — read this first after every compaction)
 
 **After compaction or at session start:**
+
 1. Read all `PLAN_*.md` files in the project root — these are the active goals
 2. Run `TaskList` to see tracked tasks with status
 3. Do NOT start new work without checking these first
 
 **During work:**
+
 - When the user gives a new requirement, add it to the relevant `PLAN_*.md` or create a new one
 - Track all user goals as Tasks with status (pending -> in_progress -> completed)
 - Update `PLAN_*.md` with progress before context gets large
 
 **PLAN file pattern:**
+
 - Active plans live at project root: `PLAN_<DESCRIPTION>.md`
 - Each plan has user assertions verbatim at the top (non-negotiable requirements)
 - Plans track problems, fixes applied, and verification criteria
@@ -22,6 +25,7 @@
 ## Quick Reference
 
 This repository manages the **root AWS account** (887764105431) for diyaccounting.co.uk:
+
 - **Route53 hosted zone** for `diyaccounting.co.uk` (all DNS records)
 - **RootDnsStack**: Alias records pointing to gateway/spreadsheets CloudFront distributions
 - **Holding page**: Maintenance page at `{env}-holding.diyaccounting.co.uk`
@@ -29,16 +33,27 @@ This repository manages the **root AWS account** (887764105431) for diyaccountin
 
 **What this repo does NOT have**: Lambda, DynamoDB, Cognito, API Gateway, Docker, ngrok, HMRC, Stripe, or any application code.
 
+## Account Structure
+
+```
+AWS Organization Root (887764105431) ── Management
+├── gateway ─────────── 283165661847 ── Workloads OU
+├── spreadsheets ────── 064390746177 ── Workloads OU
+├── submit-ci ──────── 367191799875 ── Workloads OU
+├── submit-prod ────── 972912397388 ── Workloads OU
+└── submit-backup ──── 914216784828 ── Backup OU
+```
+
 ## AWS Accounts and Repositories
 
-| Account | ID | Repository | Purpose |
-|---------|-----|-----------|---------|
-| Management (root) | 887764105431 | `antonycc/root.diyaccounting.co.uk` | **This repo** — Route53, holding page |
-| gateway | 283165661847 | `antonycc/www.diyaccounting.co.uk` (future) | Gateway static site |
-| spreadsheets | 064390746177 | `antonycc/diy-accounting` (future) | Spreadsheets static site |
-| submit-ci | 367191799875 | `antonycc/submit.diyaccounting.co.uk` | Submit CI deployments |
-| submit-prod | 972912397388 | `antonycc/submit.diyaccounting.co.uk` | Submit prod deployments |
-| submit-backup | 914216784828 | — | Cross-account backup vault |
+| Account           | ID           | Repository                                  | Purpose                               |
+| ----------------- | ------------ | ------------------------------------------- | ------------------------------------- |
+| Management (root) | 887764105431 | `antonycc/root.diyaccounting.co.uk`         | **This repo** — Route53, holding page |
+| gateway           | 283165661847 | `antonycc/www.diyaccounting.co.uk` (future) | Gateway static site                   |
+| spreadsheets      | 064390746177 | `antonycc/diy-accounting` (future)          | Spreadsheets static site              |
+| submit-ci         | 367191799875 | `antonycc/submit.diyaccounting.co.uk`       | Submit CI deployments                 |
+| submit-prod       | 972912397388 | `antonycc/submit.diyaccounting.co.uk`       | Submit prod deployments               |
+| submit-backup     | 914216784828 | —                                           | Cross-account backup vault            |
 
 ## Git Workflow
 
@@ -51,25 +66,37 @@ This repository manages the **root AWS account** (887764105431) for diyaccountin
 ## Build Commands
 
 ```bash
-npm install                    # Install CDK CLI
+npm install                    # Install CDK CLI and dev dependencies
 ./mvnw clean verify            # Build CDK JARs
 npm run cdk:synth              # Synthesize CloudFormation templates
 npm run cdk:diff               # Show pending changes
 ```
 
+## Development Tools
+
+```bash
+npm run formatting             # Check formatting (Prettier + Spotless)
+npm run formatting-fix         # Auto-fix formatting
+npm run lint:workflows         # Validate GitHub Actions workflow syntax (uses actionlint)
+npm run update-to-minor        # Update npm dependencies (minor versions)
+npm run update-to-greatest     # Update npm dependencies (latest non-alpha)
+npm run update:java            # Update Maven dependencies to latest versions
+npm run update:node            # Update npm dependencies to latest non-alpha versions
+npm run diagram:root           # Generate draw.io architecture diagram from CDK synth output
+```
+
 ## CDK Architecture
 
 **Single CDK application** (`cdk-root/`):
+
 - Entry point: `RootEnvironment.java` -> `submit-root.jar`
 - Stack: `root-RootDnsStack` (Route53 alias records + delegation role)
 
-**Shared Java utilities** (from submit repo, same package `co.uk.diyaccounting.submit`):
-- `Kind.java` — Logging (infof, warnf, envOr)
-- `KindCdk.java` — CDK utilities (cfnOutput, buildPrimaryEnvironment, ensureLogGroupWithDependency)
-- `Route53AliasUpsert.java` — Idempotent DNS A/AAAA alias records via AwsCustomResource
-- `ResourceNameUtils.java` — Name conversion utilities
+**Java packages** (`co.uk.diyaccounting.root`):
 
-**SubmitSharedNames.java** is included for compilation compatibility with ApexStack but most of its fields are unused in this repo.
+- `root` — `RootEnvironment.java` (entry point), `SubmitSharedNames.java` (shared config)
+- `root.stacks` — `RootDnsStack.java`, `ApexStack.java`, `SubmitStackProps.java`
+- `root.utils` — `Kind.java` (logging), `KindCdk.java` (CDK utilities), `Route53AliasUpsert.java` (DNS alias), `ResourceNameUtils.java` (name conversion)
 
 ## Formatting
 
@@ -87,20 +114,33 @@ npm run cdk:diff               # Show pending changes
 
 Deployments are triggered via GitHub Actions workflows:
 
-| Workflow | Purpose | Trigger |
-|----------|---------|---------|
-| `deploy.yml` | Deploy RootDnsStack (DNS records) | Manual dispatch |
-| `deploy-holding.yml` | Switch apex to holding page or last-known-good | Manual dispatch |
+| Workflow             | Purpose                                        | Trigger              |
+| -------------------- | ---------------------------------------------- | -------------------- |
+| `test.yml`           | Lint, format check, Maven verify, CDK synth    | Push, daily schedule |
+| `deploy.yml`         | Deploy RootDnsStack (DNS records)              | Manual dispatch      |
+| `deploy-holding.yml` | Switch apex to holding page or last-known-good | Manual dispatch      |
 
-Both workflows use OIDC authentication with these GitHub vars:
-- `ROOT_ACTIONS_ROLE_ARN`, `ROOT_DEPLOY_ROLE_ARN` — Root account roles
-- `GATEWAY_ACTIONS_ROLE_ARN`, `GATEWAY_DEPLOY_ROLE_ARN` — For CloudFront lookups
-- `SPREADSHEETS_ACTIONS_ROLE_ARN`, `SPREADSHEETS_DEPLOY_ROLE_ARN` — For CloudFront lookups
-- `ROOT_ACCOUNT_ID`, `ROOT_HOSTED_ZONE_ID` — Account constants
+Both workflows use OIDC authentication with these GitHub repository variables:
+
+| Variable                        | Value                                                             | Purpose                            |
+| ------------------------------- | ----------------------------------------------------------------- | ---------------------------------- |
+| `GATEWAY_ACTIONS_ROLE_ARN`      | `arn:aws:iam::283165661847:role/gateway-github-actions-role`      | OIDC auth for gateway account      |
+| `GATEWAY_DEPLOY_ROLE_ARN`       | `arn:aws:iam::283165661847:role/gateway-deployment-role`          | CloudFront lookups in gateway      |
+| `SPREADSHEETS_ACTIONS_ROLE_ARN` | `arn:aws:iam::064390746177:role/spreadsheets-github-actions-role` | OIDC auth for spreadsheets account |
+| `SPREADSHEETS_DEPLOY_ROLE_ARN`  | `arn:aws:iam::064390746177:role/spreadsheets-deployment-role`     | CloudFront lookups in spreadsheets |
+| `ROOT_ACTIONS_ROLE_ARN`         | `arn:aws:iam::887764105431:role/root-github-actions-role`         | OIDC auth for root account         |
+| `ROOT_DEPLOY_ROLE_ARN`          | `arn:aws:iam::887764105431:role/root-deployment-role`             | CDK deploy in root account         |
+| `ROOT_ACCOUNT_ID`               | `887764105431`                                                    | Root account identifier            |
+| `ROOT_HOSTED_ZONE_ID`           | `Z0315522208PWZSSBI9AL`                                           | Route53 hosted zone ID             |
+
+Each OIDC actions role trusts both `repo:antonycc/root.diyaccounting.co.uk:*` and `repo:antonycc/submit.diyaccounting.co.uk:*`.
+
+**GitHub Environment**: The `deploy-root-dns` job uses `environment: prod`. This environment must exist in Settings > Environments.
 
 ## AWS CLI Access
 
 Use SSO profiles:
+
 ```bash
 aws sso login --sso-session diyaccounting
 aws --profile management route53 list-hosted-zones
@@ -116,6 +156,7 @@ aws --profile management cloudformation describe-stacks --stack-name root-RootDn
 ## Confirm Means Stop and Wait (CRITICAL)
 
 When the user says "confirm each command" or similar:
+
 1. **Present the command** in a code block.
 2. **STOP. Do not execute.** Wait for the user to explicitly approve.
 3. Only after the user says "yes", "go ahead", "run it", or similar, execute that single command.

@@ -12,17 +12,37 @@
       "id": "ou-hkwr-duyzaini",
       "name": "Workloads",
       "accounts": [
-        { "id": "283165661847", "name": "gateway", "email": "admin+aws-gateway@diyaccounting.co.uk" },
-        { "id": "064390746177", "name": "spreadsheets", "email": "admin+aws-spreadsheets@diyaccounting.co.uk" },
-        { "id": "367191799875", "name": "submit-ci", "email": "admin+aws-submit-ci@diyaccounting.co.uk" },
-        { "id": "972912397388", "name": "submit-prod", "email": "admin+aws-submit-prod@diyaccounting.co.uk" }
+        {
+          "id": "283165661847",
+          "name": "gateway",
+          "email": "admin+aws-gateway@diyaccounting.co.uk"
+        },
+        {
+          "id": "064390746177",
+          "name": "spreadsheets",
+          "email": "admin+aws-spreadsheets@diyaccounting.co.uk"
+        },
+        {
+          "id": "367191799875",
+          "name": "submit-ci",
+          "email": "admin+aws-submit-ci@diyaccounting.co.uk"
+        },
+        {
+          "id": "972912397388",
+          "name": "submit-prod",
+          "email": "admin+aws-submit-prod@diyaccounting.co.uk"
+        }
       ]
     },
     {
       "id": "ou-hkwr-023or27q",
       "name": "Backup",
       "accounts": [
-        { "id": "914216784828", "name": "submit-backup", "email": "admin+aws-submit-backup@diyaccounting.co.uk" }
+        {
+          "id": "914216784828",
+          "name": "submit-backup",
+          "email": "admin+aws-submit-backup@diyaccounting.co.uk"
+        }
       ]
     }
   ],

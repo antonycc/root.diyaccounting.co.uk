@@ -3,10 +3,10 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit.utils;
+package co.uk.diyaccounting.root.utils;
 
-import static co.uk.diyaccounting.submit.utils.Kind.infof;
-import static co.uk.diyaccounting.submit.utils.Kind.warnf;
+import static co.uk.diyaccounting.root.utils.Kind.infof;
+import static co.uk.diyaccounting.root.utils.Kind.warnf;
 
 import java.util.List;
 import java.util.Map;
@@ -276,8 +276,7 @@ public class KindCdk {
      * @param ttlAttributeName The name of the TTL attribute (e.g. "ttl")
      */
     public static void ensureTimeToLive(Stack stack, String id, String tableName, String ttlAttributeName) {
-        Map<String, Object> timeToLiveSpec =
-                Map.of("AttributeName", ttlAttributeName, "Enabled", true);
+        Map<String, Object> timeToLiveSpec = Map.of("AttributeName", ttlAttributeName, "Enabled", true);
 
         Map<String, Object> updateTtlParams = Map.of("TableName", tableName, "TimeToLiveSpecification", timeToLiveSpec);
 

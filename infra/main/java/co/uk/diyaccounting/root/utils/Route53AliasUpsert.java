@@ -3,7 +3,7 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit.utils;
+package co.uk.diyaccounting.root.utils;
 
 import java.util.List;
 import java.util.Map;
@@ -67,8 +67,8 @@ public final class Route53AliasUpsert {
             return params;
         };
 
-        var statements = new java.util.ArrayList<>(List.of(
-                software.amazon.awscdk.services.iam.PolicyStatement.Builder.create()
+        var statements =
+                new java.util.ArrayList<>(List.of(software.amazon.awscdk.services.iam.PolicyStatement.Builder.create()
                         .actions(List.of("route53:ChangeResourceRecordSets"))
                         .resources(List.of("arn:aws:route53:::hostedzone/" + zone.getHostedZoneId()))
                         .build()));
