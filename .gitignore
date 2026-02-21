@@ -23,3 +23,7 @@ CLAUDE.local.md
 
 # CDK output
 /cdk.out/
+
+# Generated diagrams
+*.drawio
+/cdk-root-root-RootDnsStack.drawio.bak

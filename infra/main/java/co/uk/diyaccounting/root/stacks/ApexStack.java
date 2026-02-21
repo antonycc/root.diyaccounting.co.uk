@@ -3,13 +3,13 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit.stacks;
+package co.uk.diyaccounting.root.stacks;
 
-import static co.uk.diyaccounting.submit.utils.Kind.infof;
-import static co.uk.diyaccounting.submit.utils.KindCdk.cfnOutput;
-import static co.uk.diyaccounting.submit.utils.KindCdk.ensureLogGroupWithDependency;
+import static co.uk.diyaccounting.root.utils.Kind.infof;
+import static co.uk.diyaccounting.root.utils.KindCdk.cfnOutput;
+import static co.uk.diyaccounting.root.utils.KindCdk.ensureLogGroupWithDependency;
 
-import co.uk.diyaccounting.submit.SubmitSharedNames;
+import co.uk.diyaccounting.root.SubmitSharedNames;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -376,7 +376,7 @@ public class ApexStack extends Stack {
                 .build();
 
         // Idempotent UPSERT of Route53 A/AAAA alias to CloudFront (replaces deprecated deleteExisting)
-        co.uk.diyaccounting.submit.utils.Route53AliasUpsert.upsertAliasToCloudFront(
+        co.uk.diyaccounting.root.utils.Route53AliasUpsert.upsertAliasToCloudFront(
                 this, props.resourceNamePrefix() + "-AliasRecord", zone, recordName, this.distribution.getDomainName());
         this.aliasRecordDomainName = (recordName == null || recordName.isBlank())
                 ? zone.getZoneName()

@@ -3,9 +3,9 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit;
+package co.uk.diyaccounting.root;
 
-import co.uk.diyaccounting.submit.utils.ResourceNameUtils;
+import co.uk.diyaccounting.root.utils.ResourceNameUtils;
 import software.amazon.awscdk.services.apigatewayv2.HttpMethod;
 
 public class LambdaNames {

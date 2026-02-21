@@ -3,12 +3,12 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit.stacks;
+package co.uk.diyaccounting.root.stacks;
 
-import static co.uk.diyaccounting.submit.utils.Kind.infof;
-import static co.uk.diyaccounting.submit.utils.KindCdk.cfnOutput;
+import static co.uk.diyaccounting.root.utils.Kind.infof;
+import static co.uk.diyaccounting.root.utils.KindCdk.cfnOutput;
 
-import co.uk.diyaccounting.submit.utils.Route53AliasUpsert;
+import co.uk.diyaccounting.root.utils.Route53AliasUpsert;
 import java.util.List;
 import org.immutables.value.Value;
 import software.amazon.awscdk.Environment;

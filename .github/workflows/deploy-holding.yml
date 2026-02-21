@@ -8,31 +8,30 @@ on:
     inputs:
       target:
         type: choice
-        description: 'Where to point the apex domain'
+        description: "Where to point the apex domain"
         required: true
         options:
-          - 'holding'
-          - 'last-known-good'
-        default: 'holding'
+          - "holding"
+          - "last-known-good"
+        default: "holding"
       environment-name:
         type: choice
-        description: 'Environment name (auto = derive from branch)'
+        description: "Environment name (auto = derive from branch)"
         required: false
         options:
-          - '(auto)'
-          - 'ci'
-          - 'prod'
-        default: '(auto)'
+          - "(auto)"
+          - "ci"
+          - "prod"
+        default: "(auto)"
 
 permissions:
   id-token: write
   contents: read
 
 env:
-  AWS_REGION: 'eu-west-2'
+  AWS_REGION: "eu-west-2"
 
 jobs:
-
   params:
     runs-on: ubuntu-24.04
     steps:
@@ -84,7 +83,7 @@ jobs:
       prod-apex-alias: ${{ steps.deployment-config.outputs.prod-apex-alias }}
 
   resolve-target:
-    name: 'resolve target deployment'
+    name: "resolve target deployment"
     needs: [params, names]
     runs-on: ubuntu-24.04
     environment: ${{ needs.names.outputs.environment-name }}
@@ -182,7 +181,7 @@ jobs:
       api-gateway-id: ${{ steps.resolve.outputs.API_GATEWAY_ID }}
 
   set-origins:
-    name: 'set origins to ${{ needs.params.outputs.target }}'
+    name: "set origins to ${{ needs.params.outputs.target }}"
     needs: [params, names, resolve-target]
     runs-on: ubuntu-24.04
     environment: ${{ needs.names.outputs.environment-name }}
@@ -216,7 +215,7 @@ jobs:
           retry-max-attempts: 3
 
       - name: Set origins
-        uses: './.github/actions/set-origins'
+        uses: "./.github/actions/set-origins"
         with:
           origin-domain: ${{ needs.resolve-target.outputs.origin-domain }}
           apex-domain: ${{ needs.names.outputs.apex-domain }}

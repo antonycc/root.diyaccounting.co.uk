@@ -3,7 +3,7 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit;
+package co.uk.diyaccounting.root;
 
 import org.immutables.value.Value;
 import software.amazon.awscdk.services.apigatewayv2.HttpMethod;

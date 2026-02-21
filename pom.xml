@@ -19,7 +19,7 @@
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>2.41.25</version>
+                <version>2.41.34</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -36,7 +36,7 @@
             <dependency>
                 <groupId>software.constructs</groupId>
                 <artifactId>constructs</artifactId>
-                <version>10.4.5</version>
+                <version>10.5.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -127,6 +127,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Create the root JAR with correct main class -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>retag-root</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/${project.build.finalName}-dist.jar" tofile="${project.build.directory}/submit-root.jar"></copy>
+                                <jar jarfile="${project.build.directory}/submit-root.jar" update="true" zip64Mode="as-needed">
+                                    <manifest>
+                                        <attribute name="Main-Class" value="co.uk.diyaccounting.root.RootEnvironment"></attribute>
+                                    </manifest>
+                                </jar>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
@@ -185,7 +210,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"></transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>co.uk.diyaccounting.submit.RootEnvironment</mainClass>
+                                    <mainClass>co.uk.diyaccounting.root.RootEnvironment</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>
@@ -247,31 +272,6 @@
                 <configuration>
                     <mavenVersion>3.9.10</mavenVersion>
                 </configuration>
-            </plugin>
-            <!-- Create the root JAR with correct main class -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>retag-root</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>verify</phase>
-                        <configuration>
-                            <target>
-                                <copy file="${project.build.directory}/${project.build.finalName}-dist.jar" tofile="${project.build.directory}/submit-root.jar"></copy>
-                                <jar jarfile="${project.build.directory}/submit-root.jar" update="true" zip64Mode="as-needed">
-                                    <manifest>
-                                        <attribute name="Main-Class" value="co.uk.diyaccounting.submit.RootEnvironment"></attribute>
-                                    </manifest>
-                                </jar>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
         <!-- Source directory matches submit repo layout -->

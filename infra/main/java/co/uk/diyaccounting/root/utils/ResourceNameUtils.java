@@ -3,7 +3,7 @@
  * Copyright (C) 2025-2026 DIY Accounting Ltd
  */
 
-package co.uk.diyaccounting.submit.utils;
+package co.uk.diyaccounting.root.utils;
 
 import java.util.AbstractMap;
 import java.util.Collections;

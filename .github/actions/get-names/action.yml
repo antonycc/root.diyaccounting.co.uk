@@ -59,7 +59,7 @@ runs:
         GET_NAMES_GITHUB_REF_NAME: ${{ github.ref_name }}
         GET_NAMES_GITHUB_HEAD_REF: ${{ github.head_ref }}
         GET_NAMES_GITHUB_SHA: ${{ github.sha }}
-        GET_NAMES_PROD_BRANCH_NAME: 'main'
+        GET_NAMES_PROD_BRANCH_NAME: "main"
         GET_NAMES_GITHUB_TOKEN: ${{ github.token }}
         GET_NAMES_GITHUB_EVENT_NAME: ${{ github.event_name }}
       run: |
