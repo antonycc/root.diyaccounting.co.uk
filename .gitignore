@@ -1,0 +1,25 @@
+# Build output
+/target/
+/cdk-submit-root.out/
+/dependency-reduced-pom.xml
+
+# Node
+/node_modules/
+
+# Environments
+/.env
+
+# IntelliJ
+/.idea/
+*.iws
+
+# macOS
+**/.DS_Store
+**/._*
+
+# Claude Code local files
+.claude/settings.local.json
+CLAUDE.local.md
+
+# CDK output
+/cdk.out/

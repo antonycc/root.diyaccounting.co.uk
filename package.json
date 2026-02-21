@@ -1,0 +1,14 @@
+{
+  "name": "@antonycc/root-diyaccounting-co-uk",
+  "version": "1.0.0",
+  "description": "Root account DNS and holding page management for diyaccounting.co.uk",
+  "private": true,
+  "scripts": {
+    "build": "./mvnw clean verify",
+    "cdk:synth": "cd cdk-root && npx cdk synth --require-approval never --ci true --strict --validation && cd ..",
+    "cdk:diff": "cd cdk-root && npx cdk diff && cd .."
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.1104.0"
+  }
+}
