@@ -182,7 +182,7 @@ jobs:
       # === Lookup gateway CloudFront domains (gateway account) ===
 
       - name: Configure gateway account (OIDC)
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.GATEWAY_ACTIONS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
@@ -193,7 +193,7 @@ jobs:
           retry-max-attempts: 3
 
       - name: Assume gateway deployment role
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.GATEWAY_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
@@ -259,7 +259,7 @@ jobs:
       # === Lookup spreadsheets CloudFront domains (spreadsheets account) ===
 
       - name: Configure spreadsheets account (OIDC)
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.SPREADSHEETS_ACTIONS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
@@ -270,7 +270,7 @@ jobs:
           retry-max-attempts: 3
 
       - name: Assume spreadsheets deployment role
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.SPREADSHEETS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
@@ -324,7 +324,7 @@ jobs:
       # === Deploy RootDnsStack (root account) ===
 
       - name: Configure root account (OIDC)
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.ROOT_ACTIONS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
@@ -335,7 +335,7 @@ jobs:
           retry-max-attempts: 3
 
       - name: Assume root deployment role
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ vars.ROOT_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
