@@ -2,10 +2,6 @@
 
 Root AWS account (887764105431) infrastructure for diyaccounting.co.uk. Manages the Route53 hosted zone, DNS alias records, cross-account delegation role, and the holding/maintenance page.
 
-TODO:
-
-- commit, push, deploy and merge
-
 ## Account Structure
 
 ```
